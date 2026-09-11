@@ -3,7 +3,7 @@
 **Fornalhas com tiers e kits de upgrade encaixáveis para servidores Paper — companheiro do IcarusChests, sem exigir nenhum mod do lado do jogador.**
 
 [![Build](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml/badge.svg)](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml)
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0-blueviolet)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1.0-blueviolet)
 ![Paper](https://img.shields.io/badge/Paper-1.21.x-2ecc71)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 
@@ -18,6 +18,7 @@ anterior como base. Nada de resource pack, nada de instalar nada no cliente.
 - **7 tiers de fornalha**, do Cobre ao Netherite, cada um mais rápido que o anterior.
 - **Kits de upgrade em cadeia** — craftados com o kit do tier anterior no meio da grade, cercado pelo material daquele tier (com duas exceções de receita, veja a tabela).
 - **Fornalha vanilla de verdade**: a GUI de 3 slots (entrada/combustível/saída) nunca muda — só o tempo de smelt. O nome da fornalha na GUI muda para refletir o tier atual (ex: "Fornalha de Diamante").
+- **Partículas coloridas** — cada tier solta uma fagulha na cor do seu minério (cobre, ferro, ouro, diamante, esmeralda, obsidiana, netherite) toda vez que começa a smeltar um item ou acende um novo combustível, além de uma explosão maior de partículas no instante do upgrade. Quanto mais rápido o tier, mais frequente a fagulha — é a única forma de ver o tier de fora sem abrir a fornalha.
 - **Livro de Receitas** in-game — todo kit craftável do plugin tem uma página mostrando exatamente como fazer.
 - **Escopo deliberado**: só a Fornalha comum é afetada. Fornalha a Lenha (Blast Furnace) e Defumador (Smoker) continuam 100% vanilla.
 

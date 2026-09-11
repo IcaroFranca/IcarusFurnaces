@@ -5,7 +5,9 @@ import dev.icaro.icarusfurnaces.tier.FurnaceTierService;
 import dev.icaro.icarusfurnaces.upgrade.FurnaceKitRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -70,6 +72,14 @@ public final class FurnaceInteractListener implements Listener {
         FurnaceTierService.applyTier(block, requiredNext.get());
         kit.setAmount(kit.getAmount() - 1);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
+        spawnUpgradeBurst(block, requiredNext.get());
         player.sendMessage(Component.text("Fornalha evoluida para " + requiredNext.get().displayName() + "!", NamedTextColor.GREEN));
+    }
+
+    /** A bigger, one-off puff of the new tier's color right on upgrade — see {@code FurnaceParticleListener} for the ongoing, per-smelt version. */
+    private void spawnUpgradeBurst(Block block, FurnaceTier newTier) {
+        Location location = block.getLocation().add(0.5, 1.1, 0.5);
+        Particle.DustOptions dust = new Particle.DustOptions(newTier.particleColor(), 1.8f);
+        block.getWorld().spawnParticle(Particle.DUST, location, 40, 0.35, 0.35, 0.35, 0, dust);
     }
 }

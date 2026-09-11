@@ -94,4 +94,15 @@ class FurnaceTierTest {
                 .count();
         assertEquals(FurnaceTier.values().length, distinctColors, "every tier should have its own title color");
     }
+
+    @Test
+    void particleColorMatchesTitleColorsRgb() {
+        // FurnaceParticleListener/FurnaceInteractListener spawn Particle.DustOptions from this —
+        // it must always agree with the color already shown in the furnace's GUI title/item lore.
+        for (FurnaceTier tier : FurnaceTier.values()) {
+            assertEquals(tier.titleColor().red(), tier.particleColor().getRed(), tier + "'s particle red channel must match its title color");
+            assertEquals(tier.titleColor().green(), tier.particleColor().getGreen(), tier + "'s particle green channel must match its title color");
+            assertEquals(tier.titleColor().blue(), tier.particleColor().getBlue(), tier + "'s particle blue channel must match its title color");
+        }
+    }
 }

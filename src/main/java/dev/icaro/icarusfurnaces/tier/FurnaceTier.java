@@ -1,6 +1,7 @@
 package dev.icaro.icarusfurnaces.tier;
 
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Color;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -53,6 +54,11 @@ public enum FurnaceTier {
     /** Color used for this tier's name, matching its material — in the furnace's custom container title and in item lore. */
     public TextColor titleColor() {
         return titleColor;
+    }
+
+    /** {@link #titleColor()}, same RGB, as a {@link Color} for {@code Particle.DustOptions} — see {@code FurnaceParticleListener}. */
+    public Color particleColor() {
+        return Color.fromRGB(titleColor.red(), titleColor.green(), titleColor.blue());
     }
 
     /** The tier one step below this one, if any (Copper has none — its kit is crafted from a plain furnace instead). */
