@@ -1,0 +1,24 @@
+name: IcarusFurnaces
+version: '${version}'
+main: dev.icaro.icarusfurnaces.IcarusFurnacesPlugin
+api-version: '1.21'
+author: IcaroFranca
+description: Tiered smelting speed for Paper servers, a companion to IcarusChests.
+website: https://github.com/IcaroFranca/IcarusFurnaces
+
+commands:
+  icarusfurnaces:
+    description: Main IcarusFurnaces command.
+    aliases: [icarusf, ifu]
+    usage: /<command> <ping|info|give|reload|recipebook>
+
+permissions:
+  icarusfurnaces.info:
+    description: Permite usar /icarusfurnaces info.
+    default: true
+  icarusfurnaces.admin:
+    description: Acesso aos comandos administrativos do IcarusFurnaces (give, reload).
+    default: op
+  icarusfurnaces.recipebook:
+    description: Permite usar /icarusfurnaces recipebook para pegar o Livro de Receitas.
+    default: true

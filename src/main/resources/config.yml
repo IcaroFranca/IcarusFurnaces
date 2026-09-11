@@ -1,0 +1,11 @@
+# Textura Base64 de cada kit de upgrade (pegue em minecraft-heads.com ou similar).
+# Sem uma textura configurada, o kit cai no icone vanilla do seu material principal
+# (ex: o kit de Cobre vira um Lingote de Cobre renomeado) - nunca quebra por falta de configuracao.
+upgrade-kit-heads:
+  copper: ""
+  iron: ""
+  gold: ""
+  diamond: ""
+  emerald: ""
+  obsidian: ""
+  netherite: ""
