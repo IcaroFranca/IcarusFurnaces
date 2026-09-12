@@ -6,7 +6,6 @@ import dev.icaro.icarusfurnaces.gui.FurnaceRecipeBookRegistry;
 import dev.icaro.icarusfurnaces.listener.FurnaceCookSpeedListener;
 import dev.icaro.icarusfurnaces.listener.FurnaceInteractListener;
 import dev.icaro.icarusfurnaces.listener.FurnaceKitProtectionListener;
-import dev.icaro.icarusfurnaces.listener.FurnaceKitValidationListener;
 import dev.icaro.icarusfurnaces.listener.FurnaceParticleListener;
 import dev.icaro.icarusfurnaces.listener.RecipeBookListener;
 import dev.icaro.icarusfurnaces.upgrade.FurnaceKitRegistry;
@@ -66,7 +65,6 @@ public final class IcarusFurnacesPlugin extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new FurnaceInteractListener(), this);
         pluginManager.registerEvents(new FurnaceCookSpeedListener(), this);
-        pluginManager.registerEvents(new FurnaceKitValidationListener(), this);
         pluginManager.registerEvents(new FurnaceKitProtectionListener(), this);
         pluginManager.registerEvents(new FurnaceParticleListener(), this);
         pluginManager.registerEvents(new RecipeBookListener(recipeBookRegistry), this);

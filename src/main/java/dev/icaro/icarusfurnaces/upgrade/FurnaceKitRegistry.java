@@ -10,7 +10,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -25,17 +24,21 @@ import java.util.logging.Level;
 /**
  * Builds the consumable "upgrade kit" item for each {@link FurnaceTier} and
  * registers its crafting recipe. A kit is tagged via PDC with the tier it
- * upgrades a furnace TO — it is not itself placeable, and applying it is
+ * upgrades a furnace TO — it is not itself placeable, and applying it (via
+ * shift + right-click on a placed furnace at the right current tier) is
  * handled by {@code FurnaceInteractListener}.
  *
- * <p>Every tier but {@link FurnaceTier#COPPER} chains off the previous
- * tier's kit sitting in the center of the crafting grid, exactly like
- * IcarusChests' Stack upgrade tiers (see that project's {@code
- * UpgradeRegistry}): vanilla's {@code RecipeChoice} can only match an
- * ingredient by Material, never by "this exact custom item", so that slot is
- * declared broadly (any player head, or the previous tier's own fallback
- * material) and {@link FurnaceKitValidationListener} does the real,
- * PDC-based exactness check as the crafting grid changes.
+ * <p>Every tier's kit is crafted the same simple way: a plain {@link
+ * Material#FURNACE} in the center of the grid, surrounded by that tier's own
+ * material — no tier's recipe requires already owning a previous tier's kit,
+ * unlike an earlier design of this class. The sequential-progression gate
+ * lives entirely at application time ({@code FurnaceInteractListener}
+ * checking the placed furnace's current tier), not at crafting time — the
+ * exact same split IcarusChests' own {@code UpgradeKitRegistry} uses for
+ * chest tier kits. That also means every ingredient here is a plain,
+ * unambiguous {@code Material}: no custom-item PDC exactness check is needed
+ * (contrast with IcarusChests' Stack upgrade tiers, which do chain off a
+ * previous custom item and need exactly that kind of check).
  *
  * <p>The icon is a custom-textured player head when the admin configured one
  * for that tier ({@code upgrade-kit-heads} in {@code config.yml}), falling
@@ -81,9 +84,6 @@ public final class FurnaceKitRegistry {
         for (Map.Entry<Character, Material> entry : spec.materials().entrySet()) {
             recipe.setIngredient(entry.getKey(), entry.getValue());
         }
-        if (spec.kitChar() != null) {
-            recipe.setIngredient(spec.kitChar(), previousKitChoice(tier));
-        }
         plugin.getServer().addRecipe(recipe);
     }
 
@@ -102,6 +102,9 @@ public final class FurnaceKitRegistry {
     }
 
     private List<Component> kitLore(FurnaceTier tier) {
+        // Describes where to APPLY the kit (shift + right-click), not how to craft it — the
+        // sequential-tier gate below is unrelated to this class's crafting recipes, see the class
+        // javadoc.
         String target = tier.previous().map(previous -> "Fornalha de " + previous.displayName()).orElse("fornalha comum");
         return List.of(
                 Component.text("Shift + botao direito numa", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
@@ -110,12 +113,9 @@ public final class FurnaceKitRegistry {
     }
 
     /**
-     * The 3x3 grid of display items for {@code tier}'s recipe — real
-     * materials plus a sample of the previous tier's kit where relevant —
-     * built from the exact same {@link #recipeOf(FurnaceTier)} that {@link
-     * #registerRecipe(FurnaceTier)} feeds into the real recipe, so the
-     * recipe book (see {@code FurnaceRecipeBookRegistry}) can never drift
-     * from it.
+     * The 3x3 grid of display items for {@code tier}'s recipe, built from the exact same {@link
+     * #recipeOf(FurnaceTier)} that {@link #registerRecipe(FurnaceTier)} feeds into the real recipe,
+     * so the recipe book (see {@code FurnaceRecipeBookRegistry}) can never drift from it.
      */
     public Map<Integer, ItemStack> recipeBookGrid(FurnaceTier tier) {
         KitRecipe spec = recipeOf(tier);
@@ -124,70 +124,40 @@ public final class FurnaceKitRegistry {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 char symbol = shape[row].charAt(col);
-                ItemStack display = displayItemFor(tier, spec, symbol);
-                if (display != null) {
-                    grid.put(row * 3 + col, display);
+                Material material = spec.materials().get(symbol);
+                if (material != null) {
+                    grid.put(row * 3 + col, new ItemStack(material));
                 }
             }
         }
         return grid;
     }
 
-    private ItemStack displayItemFor(FurnaceTier tier, KitRecipe spec, char symbol) {
-        if (symbol == ' ') {
-            return null;
-        }
-        // spec.kitChar() is null for Copper (no previous-kit slot at all) — the null check has to
-        // come first, or comparing a primitive char to a null Character throws on unboxing.
-        if (spec.kitChar() != null && symbol == spec.kitChar()) {
-            return tier.previous().map(this::createKit).orElse(new ItemStack(Material.FURNACE));
-        }
-        Material material = spec.materials().get(symbol);
-        return material == null ? null : new ItemStack(material);
-    }
-
-    private RecipeChoice previousKitChoice(FurnaceTier tier) {
-        FurnaceTier previous = tier.previous()
-                .orElseThrow(() -> new IllegalStateException(tier + " has no previous tier to chain its kit from"));
-        // Accepts either shape createKit(previous) might currently have — a custom head if
-        // configured, or its plain fallback material otherwise — so a match is possible regardless.
-        return new RecipeChoice.MaterialChoice(Material.PLAYER_HEAD, representativeMaterial(previous));
-    }
-
     /**
-     * Each tier's recipe: {@link FurnaceTier#COPPER} is the only one built
-     * from a literal {@link Material#FURNACE} (char {@code 'F'}) instead of
-     * a previous kit; every other tier's {@code kitChar} names which symbol
-     * in its shape stands for the previous tier's kit item (validated by
-     * {@link FurnaceKitValidationListener}, never a plain {@code Material}).
-     * {@link FurnaceTier#DIAMOND} and {@link FurnaceTier#NETHERITE} are the
-     * two tiers the user asked for by name rather than the general "kit +
-     * 8 of the tier's material" ring shape.
+     * Each tier's recipe: a plain {@link Material#FURNACE} (char {@code 'F'}) in the center,
+     * surrounded by that tier's own material. {@link FurnaceTier#DIAMOND} and {@link
+     * FurnaceTier#NETHERITE} are the two tiers the user asked for by name rather than the general
+     * "furnace + 8 of the tier's material" ring shape.
      */
     private KitRecipe recipeOf(FurnaceTier tier) {
         return switch (tier) {
-            case COPPER -> new KitRecipe(
-                    new String[]{"MMM", "MFM", "MMM"},
-                    Map.of('M', Material.COPPER_INGOT, 'F', Material.FURNACE),
-                    null);
+            case COPPER -> ringRecipe(Material.COPPER_INGOT);
             case IRON -> ringRecipe(Material.IRON_INGOT);
             case GOLD -> ringRecipe(Material.GOLD_INGOT);
             case DIAMOND -> new KitRecipe(
-                    new String[]{"DGD", "GPG", "DGD"},
-                    Map.of('D', Material.DIAMOND, 'G', Material.GLASS),
-                    'P');
+                    new String[]{"DGD", "GFG", "DGD"},
+                    Map.of('D', Material.DIAMOND, 'G', Material.GLASS, 'F', Material.FURNACE));
             case EMERALD -> ringRecipe(Material.EMERALD);
             case OBSIDIAN -> ringRecipe(Material.OBSIDIAN);
             case NETHERITE -> new KitRecipe(
-                    new String[]{"   ", "NPN", "   "},
-                    Map.of('N', Material.NETHERITE_INGOT),
-                    'P');
+                    new String[]{"   ", "NFN", "   "},
+                    Map.of('N', Material.NETHERITE_INGOT, 'F', Material.FURNACE));
         };
     }
 
-    /** The general rule: the previous tier's kit in the center, surrounded by 8 of {@code material}. */
+    /** The general rule: a plain furnace in the center, surrounded by 8 of {@code material}. */
     private KitRecipe ringRecipe(Material material) {
-        return new KitRecipe(new String[]{"MMM", "MPM", "MMM"}, Map.of('M', material), 'P');
+        return new KitRecipe(new String[]{"MMM", "MFM", "MMM"}, Map.of('M', material, 'F', Material.FURNACE));
     }
 
     /** The plain-icon material representing this tier when no custom head is configured — never a placeable block. */
@@ -213,7 +183,7 @@ public final class FurnaceKitRegistry {
         return ordinal == null ? Optional.empty() : FurnaceTier.byOrdinal(ordinal);
     }
 
-    /** One tier's crafting shape plus its plain-material ingredients; {@code kitChar} names the previous-kit slot, if any. */
-    private record KitRecipe(String[] shape, Map<Character, Material> materials, Character kitChar) {
+    /** One tier's crafting shape plus its plain-material ingredients (always includes a {@code 'F'} → {@link Material#FURNACE} entry). */
+    private record KitRecipe(String[] shape, Map<Character, Material> materials) {
     }
 }

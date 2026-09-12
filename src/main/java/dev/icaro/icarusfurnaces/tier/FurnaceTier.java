@@ -61,7 +61,12 @@ public enum FurnaceTier {
         return Color.fromRGB(titleColor.red(), titleColor.green(), titleColor.blue());
     }
 
-    /** The tier one step below this one, if any (Copper has none — its kit is crafted from a plain furnace instead). */
+    /**
+     * The tier one step below this one, if any (Copper has none). Every tier's kit is crafted the
+     * same way regardless — a plain furnace plus that tier's own material, see {@code
+     * FurnaceKitRegistry} — this is only about the sequential gate at application time: shift +
+     * right-clicking a placed furnace requires it to currently be at exactly this tier.
+     */
     public Optional<FurnaceTier> previous() {
         int previousOrdinal = ordinal() - 1;
         return previousOrdinal >= 0 ? Optional.of(values()[previousOrdinal]) : Optional.empty();

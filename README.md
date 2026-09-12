@@ -3,7 +3,7 @@
 **Fornalhas com tiers e kits de upgrade encaixáveis para servidores Paper — companheiro do IcarusChests, sem exigir nenhum mod do lado do jogador.**
 
 [![Build](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml/badge.svg)](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml)
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.2.0-blueviolet)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-1.3.0-blueviolet)
 ![Paper](https://img.shields.io/badge/Paper-1.21.x-2ecc71)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 
@@ -16,7 +16,7 @@ anterior como base. Nada de resource pack, nada de instalar nada no cliente.
 ## ✨ Funcionalidades
 
 - **7 tiers de fornalha**, do Cobre ao Netherite, cada um mais rápido que o anterior.
-- **Kits de upgrade em cadeia** — craftados com o kit do tier anterior no meio da grade, cercado pelo material daquele tier (com duas exceções de receita, veja a tabela).
+- **Kits de upgrade** — craftados com uma fornalha comum no meio da grade, cercada pelo material daquele tier (com duas exceções de receita, veja a tabela). Aplicar o kit continua sequencial: só pega numa fornalha que já esteja exatamente no tier anterior.
 - **Fornalha vanilla de verdade**: a GUI de 3 slots (entrada/combustível/saída) nunca muda — só o tempo de smelt. O nome da fornalha na GUI muda para refletir o tier atual (ex: "Fornalha de Diamante").
 - **Partículas coloridas** — cada tier solta uma fagulha na cor do seu minério (cobre, ferro, ouro, diamante, esmeralda, obsidiana, netherite) toda vez que começa a smeltar um item ou acende um novo combustível, além de uma explosão maior de partículas no instante do upgrade. Quanto mais rápido o tier, mais frequente a fagulha — é a única forma de ver o tier de fora sem abrir a fornalha.
 - **Livro de Receitas** in-game — um menu mostra o ícone de todo kit craftável de uma vez; clique em qualquer um pra ver exatamente como craftar.
@@ -26,13 +26,13 @@ anterior como base. Nada de resource pack, nada de instalar nada no cliente.
 
 | Tier | Ticks por item | Receita do kit |
 |---|---|---|
-| Cobre | 180 | 1 Fornalha (centro) + 8× Lingote de Cobre |
-| Ferro | 160 | Kit de Cobre (centro) + 8× Lingote de Ferro |
-| Ouro | 120 | Kit de Ferro (centro) + 8× Lingote de Ouro |
-| Diamante | 80 | Kit de Ouro (centro) + 4× Diamante + 4× Vidro |
-| Esmeralda | 40 | Kit de Diamante (centro) + 8× Esmeralda |
-| Obsidiana | 20 | Kit de Esmeralda (centro) + 8× Obsidiana |
-| Netherite | 5 | Kit de Obsidiana (centro) + 2× Lingote de Netherite |
+| Cobre | 180 | Fornalha (centro) + 8× Lingote de Cobre |
+| Ferro | 160 | Fornalha (centro) + 8× Lingote de Ferro |
+| Ouro | 120 | Fornalha (centro) + 8× Lingote de Ouro |
+| Diamante | 80 | Fornalha (centro) + 4× Diamante + 4× Vidro |
+| Esmeralda | 40 | Fornalha (centro) + 8× Esmeralda |
+| Obsidiana | 20 | Fornalha (centro) + 8× Obsidiana |
+| Netherite | 5 | Fornalha (centro) + 2× Lingote de Netherite |
 
 Para referência: uma fornalha vanilla, sem nenhum kit, leva 200 ticks (10s)
 por item — todo tier do IcarusFurnaces já é mais rápido que isso desde o
