@@ -26,16 +26,16 @@ public final class NamespacedKeys {
     /** Tag on an upgrade kit item's PDC identifying the target {@code FurnaceTier} ordinal. */
     public static NamespacedKey UPGRADE_KIT_TIER;
 
-    /** Marker tag on the Recipe Book item's PDC — present (value irrelevant) means "this is the recipe book". */
-    public static NamespacedKey RECIPE_BOOK;
-
-    /** Tag on a recipe book navigation button's PDC: {@code "prev"} or {@code "next"}. */
+    /** Tag on the recipe detail screen's "back to index" button's PDC: always {@code "back"} when present. */
     public static NamespacedKey RECIPE_NAV;
+
+    /** Tag on a recipe index screen's icon PDC identifying which built {@code RecipeBookEntry} (by list position) it opens. */
+    public static NamespacedKey RECIPE_ENTRY_INDEX;
 
     public static void init(JavaPlugin plugin) {
         FURNACE_TIER = new NamespacedKey(plugin, "furnace_tier");
         UPGRADE_KIT_TIER = new NamespacedKey(plugin, "upgrade_kit_tier");
-        RECIPE_BOOK = new NamespacedKey(plugin, "recipe_book");
         RECIPE_NAV = new NamespacedKey(plugin, "recipe_nav");
+        RECIPE_ENTRY_INDEX = new NamespacedKey(plugin, "recipe_entry_index");
     }
 }

@@ -2,6 +2,7 @@ package dev.icaro.icarusfurnaces.command;
 
 import dev.icaro.icarusfurnaces.IcarusFurnacesPlugin;
 import dev.icaro.icarusfurnaces.gui.FurnaceRecipeBookRegistry;
+import dev.icaro.icarusfurnaces.gui.RecipeBookIndexGui;
 import dev.icaro.icarusfurnaces.tier.FurnaceTier;
 import dev.icaro.icarusfurnaces.tier.FurnaceTierService;
 import dev.icaro.icarusfurnaces.upgrade.FurnaceKitRegistry;
@@ -25,8 +26,8 @@ import java.util.Optional;
 /**
  * Root command for IcarusFurnaces: {@code ping} (health check), {@code info}
  * (debug: reports the tier of the furnace the player is looking at), {@code
- * recipebook} (hands over the Recipe Book item — see {@code
- * FurnaceRecipeBookRegistry}), and the admin-only {@code give}/{@code reload}.
+ * recipebook} (opens the Recipe Book menu directly — see {@code
+ * RecipeBookIndexGui}), and the admin-only {@code give}/{@code reload}.
  */
 public final class IcarusFurnacesCommand implements CommandExecutor, TabCompleter {
 
@@ -145,8 +146,8 @@ public final class IcarusFurnacesCommand implements CommandExecutor, TabComplete
             return true; // resolveTarget already messaged the sender
         }
 
-        target.get().getInventory().addItem(FurnaceRecipeBookRegistry.createBookItem());
-        sender.sendMessage(Component.text("Livro de Receitas entregue a " + target.get().getName() + ".", NamedTextColor.GREEN));
+        target.get().openInventory(RecipeBookIndexGui.open(recipeBookRegistry.buildAll()));
+        sender.sendMessage(Component.text("Livro de Receitas aberto para " + target.get().getName() + ".", NamedTextColor.GREEN));
         return true;
     }
 
