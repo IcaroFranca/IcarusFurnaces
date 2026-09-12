@@ -3,7 +3,7 @@
 **Fornalhas com tiers e kits de upgrade encaixáveis para servidores Paper — companheiro do IcarusChests, sem exigir nenhum mod do lado do jogador.**
 
 [![Build](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml/badge.svg)](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml)
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.4.0-blueviolet)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-1.4.1-blueviolet)
 ![Paper](https://img.shields.io/badge/Paper-1.21.x-2ecc71)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 

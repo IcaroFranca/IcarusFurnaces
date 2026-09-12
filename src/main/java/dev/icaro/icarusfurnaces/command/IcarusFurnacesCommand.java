@@ -11,6 +11,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.Furnace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -91,9 +92,19 @@ public final class IcarusFurnacesCommand implements CommandExecutor, TabComplete
                 + loc.getBlockZ() + ")", NamedTextColor.GOLD));
         if (tier.isPresent()) {
             sender.sendMessage(Component.text("  Tier: " + tier.get().displayName()
-                    + " (" + tier.get().cookTicks() + " ticks por item)", NamedTextColor.YELLOW));
+                    + " (" + tier.get().cookTicks() + " ticks por item configurado)", NamedTextColor.YELLOW));
         } else {
             sender.sendMessage(Component.text("  Tier: fornalha comum (nunca evoluida, 200 ticks por item)", NamedTextColor.YELLOW));
+        }
+
+        // Números ao vivo do bloco, não o que devia ser — se "Cozimento total" nunca bater com o
+        // tier acima, é sinal de que o FurnaceStartSmeltEvent não está pegando o valor certo nessa
+        // fornalha; se bater mas "Progresso" ficar parado com "Queima" > 0, o problema é outro,
+        // fora do que este plugin controla.
+        if (target.getState() instanceof Furnace furnaceState) {
+            sender.sendMessage(Component.text("  Progresso: " + furnaceState.getCookTime() + " / "
+                    + furnaceState.getCookTimeTotal() + " ticks | Queima restante: " + furnaceState.getBurnTime() + " ticks",
+                    NamedTextColor.GRAY));
         }
         return true;
     }
