@@ -35,7 +35,18 @@ tiers, ticks, comandos, etc. Ao adicionar uma feature grande o suficiente
 para entrar aqui neste CLAUDE.md, considere se o README também precisa de
 uma seção nova.
 
-## 4. Escopo deliberado do MVP
+## 4. Aplicar kit de upgrade não é sequencial — decisão deliberada
+
+Qualquer kit de upgrade funciona em qualquer fornalha, não importa o tier
+atual dela — dá pra pular direto pro Netherite numa fornalha comum, ou
+"rebaixar" aplicando um kit de tier mais baixo. Isso é proposital, pedido
+explicitamente pelo dono do projeto, não uma lacuna de validação: nunca
+reintroduza uma checagem de "só serve pra próximo tier" em
+`FurnaceInteractListener` sem confirmar com ele antes. A única restrição
+que existe é não deixar aplicar um kit do tier que a fornalha já tem (evita
+gastar o kit à toa).
+
+## 5. Escopo deliberado do MVP
 
 O sistema de tier só se aplica à Fornalha comum (`Material.FURNACE`) —
 Fornalha a Lenha (Blast Furnace) e Defumador (Smoker) continuam 100%

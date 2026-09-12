@@ -14,10 +14,12 @@ import java.util.Optional;
  *
  * <p>Unlike {@code ChestTier} there is no explicit "tier zero" constant: a
  * freshly placed vanilla furnace simply carries no {@code FURNACE_TIER} tag
- * at all (see {@code FurnaceTierService}) until a Copper kit is applied to
- * it. A furnace's capacity (3 slots: input, fuel, output) never changes
- * between tiers either — only {@link #cookTicks()} does — so, unlike a
- * chest's tier-up, applying a kit here never needs to resize anything.
+ * at all (see {@code FurnaceTierService}) until any kit is applied to it —
+ * any tier's kit works on any furnace regardless of its current tier, there
+ * is no sequential-progression requirement (see {@code
+ * FurnaceInteractListener}). A furnace's capacity (3 slots: input, fuel,
+ * output) never changes between tiers either — only {@link #cookTicks()}
+ * does — so applying a kit here never needs to resize anything.
  */
 public enum FurnaceTier {
 
@@ -62,17 +64,16 @@ public enum FurnaceTier {
     }
 
     /**
-     * The tier one step below this one, if any (Copper has none). Every tier's kit is crafted the
-     * same way regardless — a plain furnace plus that tier's own material, see {@code
-     * FurnaceKitRegistry} — this is only about the sequential gate at application time: shift +
-     * right-clicking a placed furnace requires it to currently be at exactly this tier.
+     * The tier one step below this one in the Cobre→Netherite ordering, if any (Copper has none).
+     * Plain ordinal navigation — any kit can be applied to any furnace regardless of its current
+     * tier (see {@code FurnaceInteractListener}), so this isn't tied to any gameplay gate anymore.
      */
     public Optional<FurnaceTier> previous() {
         int previousOrdinal = ordinal() - 1;
         return previousOrdinal >= 0 ? Optional.of(values()[previousOrdinal]) : Optional.empty();
     }
 
-    /** The tier reached by applying an upgrade kit to a furnace currently at this tier, if any. */
+    /** The tier one step above this one in the Cobre→Netherite ordering, if any — see {@link #previous()}. */
     public Optional<FurnaceTier> next() {
         FurnaceTier[] values = values();
         int nextOrdinal = ordinal() + 1;

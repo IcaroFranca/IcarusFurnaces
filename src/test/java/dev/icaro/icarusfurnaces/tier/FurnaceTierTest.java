@@ -46,12 +46,12 @@ class FurnaceTierTest {
             if (tier == FurnaceTier.COPPER) {
                 continue;
             }
-            assertTrue(tier.previous().isPresent(), tier + " should chain off a previous tier's kit");
+            assertTrue(tier.previous().isPresent(), tier + " should have a tier ordered just below it");
         }
     }
 
     @Test
-    void tiersUpgradeInStrictSequentialOrder() {
+    void nextNavigatesTheOrdinalOrdering() {
         assertEquals(Optional.of(FurnaceTier.IRON), FurnaceTier.COPPER.next());
         assertEquals(Optional.of(FurnaceTier.GOLD), FurnaceTier.IRON.next());
         assertEquals(Optional.of(FurnaceTier.DIAMOND), FurnaceTier.GOLD.next());

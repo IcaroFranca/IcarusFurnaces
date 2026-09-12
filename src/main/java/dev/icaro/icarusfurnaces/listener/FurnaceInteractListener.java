@@ -22,11 +22,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Optional;
 
 /**
- * Applies an upgrade kit when a player shift-right-clicks a placed Furnace
- * while holding one that matches its next tier. Every other click on a
- * furnace is left completely alone — the vanilla furnace GUI opens exactly
- * as it always does, since a furnace's own 3 slots (input/fuel/output) never
- * change between tiers and need no custom inventory at all.
+ * Applies an upgrade kit when a player shift-right-clicks a placed Furnace while holding one — any
+ * kit works on any furnace, setting it straight to that kit's tier regardless of what tier it was
+ * at before (skipping tiers, or even "downgrading", both allowed on purpose — there is no
+ * sequential-progression gate here at all, only "does this kit already match the furnace's current
+ * tier" to avoid wasting one on a no-op). Every other click on a furnace is left completely alone —
+ * the vanilla furnace GUI opens exactly as it always does, since a furnace's own 3 slots
+ * (input/fuel/output) never change between tiers and need no custom inventory at all.
  */
 public final class FurnaceInteractListener implements Listener {
 
@@ -60,20 +62,16 @@ public final class FurnaceInteractListener implements Listener {
 
     private void applyKit(Player player, Block block, ItemStack kit, FurnaceTier kitTarget) {
         Optional<FurnaceTier> current = FurnaceTierService.tierOf(block);
-        // Untagged (never upgraded) means the required next step is Copper; otherwise it's
-        // whatever comes after the current tier — empty if already at Netherite.
-        Optional<FurnaceTier> requiredNext = current.isPresent() ? current.get().next() : Optional.of(FurnaceTier.COPPER);
-
-        if (requiredNext.isEmpty() || kitTarget != requiredNext.get()) {
-            player.sendMessage(Component.text("Este kit nao serve para o proximo tier desta fornalha.", NamedTextColor.RED));
-            return;
+        if (current.isPresent() && current.get() == kitTarget) {
+            player.sendMessage(Component.text("Esta fornalha ja esta no tier " + kitTarget.displayName() + ".", NamedTextColor.RED));
+            return; // don't consume the kit on a no-op
         }
 
-        FurnaceTierService.applyTier(block, requiredNext.get());
+        FurnaceTierService.applyTier(block, kitTarget);
         kit.setAmount(kit.getAmount() - 1);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
-        spawnUpgradeBurst(block, requiredNext.get());
-        player.sendMessage(Component.text("Fornalha evoluida para " + requiredNext.get().displayName() + "!", NamedTextColor.GREEN));
+        spawnUpgradeBurst(block, kitTarget);
+        player.sendMessage(Component.text("Fornalha ajustada para " + kitTarget.displayName() + "!", NamedTextColor.GREEN));
     }
 
     /** A bigger, one-off puff of the new tier's color right on upgrade — see {@code FurnaceParticleListener} for the ongoing, per-smelt version. */

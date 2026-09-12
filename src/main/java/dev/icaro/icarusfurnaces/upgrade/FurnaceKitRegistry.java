@@ -24,21 +24,18 @@ import java.util.logging.Level;
 /**
  * Builds the consumable "upgrade kit" item for each {@link FurnaceTier} and
  * registers its crafting recipe. A kit is tagged via PDC with the tier it
- * upgrades a furnace TO — it is not itself placeable, and applying it (via
- * shift + right-click on a placed furnace at the right current tier) is
- * handled by {@code FurnaceInteractListener}.
+ * sets a furnace TO — it is not itself placeable, and applying it (shift +
+ * right-click on any placed furnace, any current tier — see {@code
+ * FurnaceInteractListener}, there is no sequential-progression gate at all)
+ * is handled by {@code FurnaceInteractListener}.
  *
  * <p>Every tier's kit is crafted the same simple way: a plain {@link
  * Material#FURNACE} in the center of the grid, surrounded by that tier's own
- * material — no tier's recipe requires already owning a previous tier's kit,
- * unlike an earlier design of this class. The sequential-progression gate
- * lives entirely at application time ({@code FurnaceInteractListener}
- * checking the placed furnace's current tier), not at crafting time — the
- * exact same split IcarusChests' own {@code UpgradeKitRegistry} uses for
- * chest tier kits. That also means every ingredient here is a plain,
- * unambiguous {@code Material}: no custom-item PDC exactness check is needed
- * (contrast with IcarusChests' Stack upgrade tiers, which do chain off a
- * previous custom item and need exactly that kind of check).
+ * material — no tier's recipe requires already owning a previous tier's kit.
+ * That also means every ingredient here is a plain, unambiguous {@code
+ * Material}: no custom-item PDC exactness check is needed (contrast with
+ * IcarusChests' Stack upgrade tiers, which do chain off a previous custom
+ * item and need exactly that kind of check).
  *
  * <p>The icon is a custom-textured player head when the admin configured one
  * for that tier ({@code upgrade-kit-heads} in {@code config.yml}), falling
@@ -95,20 +92,17 @@ public final class FurnaceKitRegistry {
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text("Kit de Upgrade: " + tier.displayName(), NamedTextColor.LIGHT_PURPLE)
                 .decoration(TextDecoration.ITALIC, false));
-        meta.lore(kitLore(tier));
+        meta.lore(kitLore());
         meta.getPersistentDataContainer().set(NamespacedKeys.UPGRADE_KIT_TIER, PersistentDataType.INTEGER, tier.ordinal());
         item.setItemMeta(meta);
         return item;
     }
 
-    private List<Component> kitLore(FurnaceTier tier) {
-        // Describes where to APPLY the kit (shift + right-click), not how to craft it — the
-        // sequential-tier gate below is unrelated to this class's crafting recipes, see the class
-        // javadoc.
-        String target = tier.previous().map(previous -> "Fornalha de " + previous.displayName()).orElse("fornalha comum");
+    /** Same for every tier: any kit works on any furnace, whatever its current tier — see the class javadoc. */
+    private List<Component> kitLore() {
         return List.of(
-                Component.text("Shift + botao direito numa", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                Component.text(target + " para evoluir.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                Component.text("Shift + botao direito em", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                Component.text("qualquer fornalha para ajustar.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
         );
     }
 

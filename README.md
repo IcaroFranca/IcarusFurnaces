@@ -3,7 +3,7 @@
 **Fornalhas com tiers e kits de upgrade encaixáveis para servidores Paper — companheiro do IcarusChests, sem exigir nenhum mod do lado do jogador.**
 
 [![Build](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml/badge.svg)](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml)
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.4.1-blueviolet)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-1.5.0-blueviolet)
 ![Paper](https://img.shields.io/badge/Paper-1.21.x-2ecc71)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 
@@ -16,7 +16,7 @@ anterior como base. Nada de resource pack, nada de instalar nada no cliente.
 ## ✨ Funcionalidades
 
 - **7 tiers de fornalha**, do Cobre ao Netherite, cada um mais rápido que o anterior.
-- **Kits de upgrade** — craftados com uma fornalha comum no meio da grade, cercada pelo material daquele tier (com duas exceções de receita, veja a tabela). Aplicar o kit continua sequencial: só pega numa fornalha que já esteja exatamente no tier anterior. Quebrar (ou explodir) uma fornalha evoluída devolve todos os kits usados nela até o tier atual — upgrade nunca é um gasto sem volta.
+- **Kits de upgrade** — craftados com uma fornalha comum no meio da grade, cercada pelo material daquele tier (com duas exceções de receita, veja a tabela). Aplicar não é sequencial: qualquer kit funciona em qualquer fornalha, pulando tiers à vontade (ou até "rebaixando"), sem precisar passar pelos intermediários. Quebrar (ou explodir) uma fornalha evoluída devolve todos os kits usados nela até o tier atual — upgrade nunca é um gasto sem volta.
 - **Fornalha vanilla de verdade**: a GUI de 3 slots (entrada/combustível/saída) nunca muda — só o tempo de smelt. O nome da fornalha na GUI muda para refletir o tier atual (ex: "Fornalha de Diamante").
 - **Partículas coloridas** — cada tier solta uma fagulha na cor do seu minério (cobre, ferro, ouro, diamante, esmeralda, obsidiana, netherite) toda vez que começa a smeltar um item ou acende um novo combustível, além de uma explosão maior de partículas no instante do upgrade. Quanto mais rápido o tier, mais frequente a fagulha — é a única forma de ver o tier de fora sem abrir a fornalha.
 - **Livro de Receitas** in-game — um menu mostra o ícone de todo kit craftável de uma vez; clique em qualquer um pra ver exatamente como craftar.
@@ -38,9 +38,11 @@ Para referência: uma fornalha vanilla, sem nenhum kit, leva 200 ticks (10s)
 por item — todo tier do IcarusFurnaces já é mais rápido que isso desde o
 primeiro degrau.
 
-Cada tier evolui craftando o kit correspondente e usando shift + botão
-direito na fornalha do tier anterior (ou numa fornalha comum, no caso do
-Cobre). Aplicar o kit não reseta o que já está smeltando.
+Cada kit é craftado independente dos outros e aplicado com shift + botão
+direito em **qualquer** fornalha — não precisa ter passado pelos tiers
+anteriores nem estar no tier certo antes. O único bloqueio é aplicar um kit
+do tier que a fornalha já tem (não faz nada, não gasta o kit). Aplicar não
+reseta o que já está smeltando.
 
 ## ⌨️ Comandos
 
