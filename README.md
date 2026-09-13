@@ -8,8 +8,9 @@
 ![Java](https://img.shields.io/badge/Java-21-orange)
 
 Reaproveita o bloco de fornalha vanilla e acelera o smelt através de um kit
-de upgrade consumível, craftado em cadeia — cada tier usa o kit do tier
-anterior como base. Nada de resource pack, nada de instalar nada no cliente.
+de upgrade consumível — cada tier craftado independente dos outros, direto
+de uma fornalha comum, sem precisar já ter o kit do tier anterior. Nada de
+resource pack, nada de instalar nada no cliente.
 
 ---
 
@@ -49,7 +50,7 @@ reseta o que já está smeltando.
 | Comando | Descrição | Permissão |
 |---|---|---|
 | `/icarusfurnaces` (ou `/icarusfurnaces ping`) | Checagem rápida — confirma que o plugin está online. | — |
-| `/icarusfurnaces info` | Mostra o tier e a velocidade da fornalha mirada. | `icarusfurnaces.info` (padrão: todos) |
+| `/icarusfurnaces info` | Mostra o tier, a velocidade e o progresso/queima ao vivo (`getCookTime`/`getBurnTime`) da fornalha mirada — útil pra diagnosticar uma fornalha que parece travada. | `icarusfurnaces.info` (padrão: todos) |
 | `/icarusfurnaces recipebook` | Abre o menu do Livro de Receitas. | `icarusfurnaces.recipebook` (padrão: todos) |
 | `/icarusfurnaces give <tier> [jogador]` | Entrega um kit de upgrade de um tier. | `icarusfurnaces.admin` (padrão: op) |
 | `/icarusfurnaces reload` | Recarrega `config.yml` sem reiniciar o servidor. | `icarusfurnaces.admin` (padrão: op) |
