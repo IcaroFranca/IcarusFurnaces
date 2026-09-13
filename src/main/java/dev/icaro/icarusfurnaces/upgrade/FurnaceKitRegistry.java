@@ -37,16 +37,28 @@ import java.util.logging.Level;
  * IcarusChests' Stack upgrade tiers, which do chain off a previous custom
  * item and need exactly that kind of check).
  *
- * <p>The icon is a custom-textured player head when the admin configured one
- * for that tier ({@code upgrade-kit-heads} in {@code config.yml}), falling
- * back to a plain icon of the tier's own representative material otherwise
- * (see {@link #representativeMaterial}). The Obsidian tier's fallback icon is
- * a placeable block ({@link Material#OBSIDIAN} itself, for an obvious visual
- * match) — {@code FurnaceKitProtectionListener} is what actually keeps any
- * kit item, of any material, from being placed and silently losing its PDC
- * identity, so no tier needs to avoid a placeable material for its icon.
+ * <p>The icon is <b>always</b> a custom-textured player head — never a plain
+ * material icon. The admin can override the texture per tier ({@code
+ * upgrade-kit-heads} in {@code config.yml}); when that's blank, {@link
+ * #DEFAULT_HEAD_TEXTURES} supplies this plugin's own baked-in default for
+ * that tier, so every kit is a head one way or the other.
  */
 public final class FurnaceKitRegistry {
+
+    /**
+     * Baked-in default head textures (Base64 {@code textures} profile values from
+     * minecraft-heads.com), one per {@link FurnaceTier}, used whenever the admin hasn't configured
+     * an override in {@code config.yml}'s {@code upgrade-kit-heads} section.
+     */
+    private static final Map<FurnaceTier, String> DEFAULT_HEAD_TEXTURES = Map.of(
+            FurnaceTier.COPPER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWM1YzdlNTM2OTVkODhmNGQzMWY1MmY0M2ZhYzYwOWFkOWU2MmJjOTdkNDlmYzUwNDE3NGRmZGI4NDE1MGMzOSJ9fX0=",
+            FurnaceTier.IRON, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTA1YTJjYWI4YjY4ZWE1N2UzYWY5OTJhMzZlNDdjOGZmOWFhODdjYzg3NzYyODE5NjZmOGMzY2YzMWEzOCJ9fX0=",
+            FurnaceTier.GOLD, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGZlYjM5ZDcxZWY4ZTZhNDI2NDY1OTMzOTNhNTc1M2NlMjZhMWJlZTI3YTBjYThhMzJjYjYzN2IxZmZhZSJ9fX0=",
+            FurnaceTier.DIAMOND, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Q2OTVkMzM1ZTZiZThjYjJhMzRlMDVlMThlYTJkMTJjM2IxN2I4MTY2YmE2MmQ2OTgyYTY0M2RmNzFmZmFjNSJ9fX0=",
+            FurnaceTier.EMERALD, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjIyMWRhNDQxOGJkM2JmYjQyZWI2NGQyYWI0MjljNjFkZWNiOGY0YmY3ZDRjZmI3N2ExNjJiZTNkY2IwYjkyNyJ9fX0=",
+            FurnaceTier.OBSIDIAN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNjYmY5ODgzZGQzNTlmZGYyMzg1YzkwYTQ1OWQ3Mzc3NjUzODJlYzQxMTdiMDQ4OTVhYzRkYzRiNjBmYyJ9fX0=",
+            FurnaceTier.NETHERITE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGMzMGM0YWI3ZDAwZmI1NWUzOWIxY2RkM2NiYzkzNDJiMTYyYzc2MTY2ZDIyNDk3MmRlZmJiZjllYzdmZmZhOCJ9fX0="
+    );
 
     private final Plugin plugin;
     private final ConfigManager configManager;
@@ -86,8 +98,8 @@ public final class FurnaceKitRegistry {
 
     /** Builds a fresh kit item for {@code tier}. Does not register a recipe. */
     public ItemStack createKit(FurnaceTier tier) {
-        Optional<String> headTexture = configManager.upgradeKitHeadTexture(tier);
-        ItemStack item = headTexture.isPresent() ? CustomHeads.createHead(headTexture.get()) : new ItemStack(representativeMaterial(tier));
+        String headTexture = configManager.upgradeKitHeadTexture(tier).orElseGet(() -> DEFAULT_HEAD_TEXTURES.get(tier));
+        ItemStack item = CustomHeads.createHead(headTexture);
 
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text("Kit de Upgrade: " + tier.displayName(), NamedTextColor.LIGHT_PURPLE)
@@ -152,19 +164,6 @@ public final class FurnaceKitRegistry {
     /** The general rule: a plain furnace in the center, surrounded by 8 of {@code material}. */
     private KitRecipe ringRecipe(Material material) {
         return new KitRecipe(new String[]{"MMM", "MFM", "MMM"}, Map.of('M', material, 'F', Material.FURNACE));
-    }
-
-    /** The plain-icon material representing this tier when no custom head is configured — never a placeable block. */
-    private static Material representativeMaterial(FurnaceTier tier) {
-        return switch (tier) {
-            case COPPER -> Material.COPPER_INGOT;
-            case IRON -> Material.IRON_INGOT;
-            case GOLD -> Material.GOLD_INGOT;
-            case DIAMOND -> Material.DIAMOND;
-            case EMERALD -> Material.EMERALD;
-            case OBSIDIAN -> Material.OBSIDIAN; // placeable — safe only because FurnaceKitProtectionListener blocks placing any kit item
-            case NETHERITE -> Material.NETHERITE_INGOT;
-        };
     }
 
     /** The tier an item upgrades a furnace TO, if it's a valid kit at all. */

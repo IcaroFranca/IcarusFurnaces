@@ -3,7 +3,7 @@
 **Fornalhas com tiers e kits de upgrade encaixáveis para servidores Paper — companheiro do IcarusChests, sem exigir nenhum mod do lado do jogador.**
 
 [![Build](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml/badge.svg)](https://github.com/IcaroFranca/IcarusFurnaces/actions/workflows/build.yml)
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.5.0-blueviolet)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-1.6.0-blueviolet)
 ![Paper](https://img.shields.io/badge/Paper-1.21.x-2ecc71)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 
@@ -58,9 +58,10 @@ Aliases: `/icarusf`, `/ifu`.
 
 ## ⚙️ Configuração
 
-Tudo em `config.yml` — nenhuma dessas seções é obrigatória: sem uma textura
-configurada, o kit cai num ícone vanilla de fallback (ex: o kit de Cobre vira
-um Lingote de Cobre renomeado) — nunca quebra por falta de configuração.
+Tudo em `config.yml` — a seção não é obrigatória: sem uma textura
+configurada, o kit usa a cabeça customizada padrão que o próprio plugin já
+traz pronta pra cada tier (o kit nunca é um ícone de material vanilla) —
+nunca quebra por falta de configuração.
 
 ```yaml
 # Textura Base64 de cada kit de upgrade (pegue em minecraft-heads.com ou similar).
